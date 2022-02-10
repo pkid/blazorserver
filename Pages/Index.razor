@@ -1,0 +1,80 @@
+﻿@page "/"
+
+@inject SitterRequestService sitterRequestService
+
+
+<div class="container">
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Request Id</th>
+                <th>Name</th>
+                <th>Start Date Time</th>
+                <th>End Date Time</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (SitterRequests.Any())
+            {
+                @foreach (var sitterRequest in SitterRequests)
+                {
+                    <tr>
+                        <td>@sitterRequest.Id</td>
+                        <td>@sitterRequest.Name</td>
+                        <td>@sitterRequest.StartDateTime.</td>
+                        <td>@sitterRequest.EndDateTime</td>
+                        <td>@sitterRequest.Description</td>
+                        @*<td><button class="btn btn-danger" @onclick="(() => DeleteProduct(product))">Delete</button></td>*@
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="6"><strong>No Sitter Requests available</strong></td></tr>
+            }
+        </tbody>
+    </table>
+
+    <button @onclick="ShowModal" class="btn btn-primary">Show Modal</button>
+
+
+
+</div>
+
+
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+
+    List<SitterRequest> SitterRequests = new List<SitterRequest>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshSitterRequests();
+    }
+
+    private async Task RefreshSitterRequests()
+    {
+        SitterRequests = await sitterRequestService.GetSitterRequestsAsync();
+    }
+
+
+    async Task ShowModal()
+    {
+        var moviesModal = Modal.Show<AddSitterRequest>("My Movies");
+        var result = await moviesModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else
+        {
+            await RefreshSitterRequests();
+            Console.WriteLine("Modal was closed");
+        }
+    }
+
+}
