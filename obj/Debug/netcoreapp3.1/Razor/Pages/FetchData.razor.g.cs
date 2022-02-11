@@ -107,6 +107,13 @@ using test2.Data;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 17 "/Users/d054341/Projects/test2/test2/_Imports.razor"
+[Authorize]
+
+#line default
+#line hidden
+#nullable disable
     [Microsoft.AspNetCore.Components.RouteAttribute("/fetchdata")]
     public partial class FetchData : Microsoft.AspNetCore.Components.ComponentBase
     {

@@ -20,11 +20,6 @@ namespace test2.Pages
 
         }
 
-        //public AddSitterRequest(SitterRequestService sitterRequestService)
-        //{
-        //    this.sitterRequestService = sitterRequestService;
-        //}
-
         [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
         async Task Close() => await BlazoredModal.CloseAsync(ModalResult.Ok(true));
