@@ -1,43 +1,46 @@
 ﻿
 
-    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="titleLabel">Add Employee</h5>
-                    <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <EditForm Model="@SitterRequest" OnValidSubmit="@HandleValidSubmit">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
-                        <div class="form-group">
-                            <label for="name">Name: </label>
-                            <InputText id="name" class="form-control" @bind-Value="@SitterRequest.Name" placeholder="Enter name"></InputText>
-                            <ValidationMessage For="@(() => SitterRequest.Name)" />
-                        </div>
-                        <div class="form-group">
-                            <label for="startDateTime">Start Date Time: </label>
-                            <InputDate id="startDateTime" class="form-control" @bind-Value="@SitterRequest.StartDateTime" placeholder="Enter Start Date Time"></InputDate>
-                            <ValidationMessage For="@(() => SitterRequest.StartDateTime)" />
-                        </div>
-                        <div class="form-group">
-                            <label for="endDateTime">End Date Time: </label>
-                            <InputDate id="endDateTime" class="form-control" @bind-Value="@SitterRequest.EndDateTime" placeholder="Enter End Date Time"></InputDate>
-                            <ValidationMessage For="@(() => SitterRequest.EndDateTime)" />
-                        </div>
-                        <div class="form-group">
-                            <label for="description">Description: </label>
-                            <InputText id="description" class="form-control" @bind-Value="@SitterRequest.Description" placeholder="Enter description"></InputText>
-                            <ValidationMessage For="@(() => SitterRequest.Description)" />
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Request</button>
-                        <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
-                    </EditForm>
-                </div>
+<div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titleLabel">Add Employee</h5>
+                <button type="button" class="close" @onclick="@Close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@SitterRequest" OnValidSubmit="@HandleValidSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-group">
+                        <label for="name">Name: </label>
+                        <InputText id="name" class="form-control" @bind-Value="@SitterRequest.Name" placeholder="Enter name"></InputText>
+                        <ValidationMessage For="@(() => SitterRequest.Name)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="startDateTime">Start Date Time: </label>
+                        <InputDate id="startDateTime" class="form-control" @bind-Value="@SitterRequest.StartDateTime" placeholder="Enter Start Date Time"></InputDate>
+                        <ValidationMessage For="@(() => SitterRequest.StartDateTime)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="endDateTime">End Date Time: </label>
+                        <InputDate id="endDateTime" class="form-control" @bind-Value="@SitterRequest.EndDateTime" placeholder="Enter End Date Time"></InputDate>
+                        <ValidationMessage For="@(() => SitterRequest.EndDateTime)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description: </label>
+                        <InputText id="description" class="form-control" @bind-Value="@SitterRequest.Description" placeholder="Enter description"></InputText>
+                        <ValidationMessage For="@(() => SitterRequest.Description)" />
+                    </div>
+                    <div class="form-group">
+                        <InputFile OnChange="OnInputFileChange" multiple />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Request</button>
+                    <a class="btn btn-outline-primary" @onclick="@Close">Close</a>
+                </EditForm>
             </div>
         </div>
     </div>
+</div>
 

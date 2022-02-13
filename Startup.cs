@@ -18,6 +18,8 @@ using test2.Data;
 using test2.Pages;
 using Blazored.Modal.Services;
 using Blazored.Modal;
+using Amazon.S3;
+using test2.Shared;
 
 namespace test2
 {
@@ -53,6 +55,9 @@ namespace test2
             services.AddScoped<SitterRequestService>();
             services.AddScoped<AddSitterRequest>();
             services.AddBlazoredModal();
+
+            services.AddAWSService<IAmazonS3>();
+            services.AddScoped<IAwsS3FileManager, AwsS3FileManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

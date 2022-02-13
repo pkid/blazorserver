@@ -12,6 +12,7 @@
                 <th>Start Date Time</th>
                 <th>End Date Time</th>
                 <th>Description</th>
+                <th>Image</th>
             </tr>
         </thead>
         <tbody>
@@ -19,14 +20,14 @@
             {
                 @foreach (var sitterRequest in SitterRequests)
                 {
-                    <tr>
-                        <td>@sitterRequest.Id</td>
-                        <td>@sitterRequest.Name</td>
-                        <td>@sitterRequest.StartDateTime.</td>
-                        <td>@sitterRequest.EndDateTime</td>
-                        <td>@sitterRequest.Description</td>
-                        @*<td><button class="btn btn-danger" @onclick="(() => DeleteProduct(product))">Delete</button></td>*@
-                    </tr>
+            <tr>
+                <td>@sitterRequest.Id</td>
+                <td>@sitterRequest.Name</td>
+                <td>@sitterRequest.StartDateTime.</td>
+                <td>@sitterRequest.EndDateTime</td>
+                <td>@sitterRequest.Description</td>
+                <td><img src=@sitterRequest.Image width="50%" height="50%"></td>
+            </tr>
                 }
             }
             else
