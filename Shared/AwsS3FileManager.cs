@@ -18,7 +18,7 @@ namespace test2.Shared
         public AwsS3FileManager(IAmazonS3 client)
         {
             _client = client;
-            _bucket = "transferzor-files";
+            _bucket = "yashuawss3bucket1";
 
         }
         public Task DeleteFileAsync(string fileName)
@@ -40,7 +40,7 @@ namespace test2.Shared
 
             var transferRequest = new TransferUtilityUploadRequest()
             {
-                ContentType = "image/jpeg",
+                ContentType = "image/png",
                 InputStream = filestream,
                 BucketName = _bucket,
                 Key = s3FileName

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Amazon;
+using Amazon.S3;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
@@ -43,27 +45,36 @@ namespace test2.Pages
 
         protected async Task HandleValidSubmit()
         {
+            await SaveFiles();
             await SitterRequestService.AddSitterRequestAsync(SitterRequest);
-            //await SaveFiles();
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
 
         //[Inject] IAwsS3FileManager AwsS3FileManager { get; set; }
 
-        //protected async Task SaveFiles()
-        //{
-        //    foreach (var file in selectedFiles)
-        //    {
-        //        await AwsS3FileManager.UploadFileAsync(file.Name, file.OpenReadStream());
-                
-        //        //Stream stream = file.OpenReadStream();
-        //        //var path = $"{file.Name}";
-        //        //FileStream fs = File.Create(path);
-        //        //await stream.CopyToAsync(fs);
-        //        //stream.Close();
-        //        //fs.Close();
-        //    }
-        //}
+        protected async Task SaveFiles()
+        {
+            RegionEndpoint bucketRegion = RegionEndpoint.EUCentral1;
+            IAmazonS3 s3Client = new AmazonS3Client(bucketRegion);
+            AwsS3FileManager awsS3FileManager = new AwsS3FileManager(s3Client);
+           
+
+            foreach (var file in selectedFiles)
+            {
+
+
+
+                var s3FileName = await awsS3FileManager.UploadFileAsync(file.Name, file.OpenReadStream());
+                this.SitterRequest.Image = "https://yashuawss3bucket1.s3.eu-central-1.amazonaws.com/" + s3FileName;
+
+                //Stream stream = file.OpenReadStream();
+                //var path = $"{file.Name}";
+                //FileStream fs = File.Create(path);
+                //await stream.CopyToAsync(fs);
+                //stream.Close();
+                //fs.Close();
+            }
+        }
 
         protected async Task OnInputFileChange(InputFileChangeEventArgs e)
         {
