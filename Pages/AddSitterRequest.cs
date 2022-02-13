@@ -13,8 +13,6 @@ namespace test2.Pages
     {
         public SitterRequest SitterRequest { get; set; } = new SitterRequest();
 
-        //private SitterRequestService sitterRequestService;
-
         public AddSitterRequest()
         {
 
