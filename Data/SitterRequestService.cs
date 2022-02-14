@@ -12,20 +12,20 @@ namespace test2.Data
 {
     public class SitterRequestService
     {
-        private SitterRequestDbContext sitterRequestDbContext;
+        private ApplicationDbContext applicationDbContext;
         private AuthenticationStateProvider authenticationStateProvider;
 
 
-        public SitterRequestService(SitterRequestDbContext sitterRequestDbContext, AuthenticationStateProvider authenticationStateProvider)
+        public SitterRequestService(ApplicationDbContext applicationDbContext, AuthenticationStateProvider authenticationStateProvider)
         {
-            this.sitterRequestDbContext = sitterRequestDbContext;
+            this.applicationDbContext = applicationDbContext;
             this.authenticationStateProvider = authenticationStateProvider;
         }
 
 
         public async Task<List<SitterRequest>> GetSitterRequestsAsync()
         {
-            return await this.sitterRequestDbContext.SitterRequests.ToListAsync();
+            return await this.applicationDbContext.SitterRequests.ToListAsync();
         }
 
 
@@ -43,8 +43,8 @@ namespace test2.Data
                 var user = authState.User;
 
                 sitterRequest.Email = user.Identity.Name;
-                this.sitterRequestDbContext.SitterRequests.Add(sitterRequest);
-                await this.sitterRequestDbContext.SaveChangesAsync();
+                this.applicationDbContext.SitterRequests.Add(sitterRequest);
+                await this.applicationDbContext.SaveChangesAsync();
             }
             catch (Exception)
             {

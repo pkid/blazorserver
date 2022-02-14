@@ -49,9 +49,9 @@ namespace test2
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<WeatherForecastService>();
 
-
-            services.AddDbContext<SitterRequestDbContext>(options =>
-                options.UseSqlite("Data Source = SitterRequest.db"));
+            //services.AddDbContext<SitterRequestDbContext>(options =>
+            //    options.UseSqlite(
+            //        Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<SitterRequestService>();
             services.AddScoped<AddSitterRequest>();
             services.AddBlazoredModal();

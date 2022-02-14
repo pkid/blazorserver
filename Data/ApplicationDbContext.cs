@@ -8,9 +8,14 @@ namespace test2.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
+
+        public DbSet<SitterRequest> SitterRequests { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
+
         }
     }
 }
