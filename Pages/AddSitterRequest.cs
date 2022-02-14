@@ -57,11 +57,14 @@ namespace test2.Pages
             AwsS3FileManager awsS3FileManager = new AwsS3FileManager(s3Client);
 
 
-            foreach (var file in selectedFiles)
+            if (selectedFiles != null)
             {
-                var s3FileName = await awsS3FileManager.UploadFileAsync(file.Name, file.OpenReadStream());
-                this.SitterRequest.Image = "https://yashuawss3bucket1.s3.eu-central-1.amazonaws.com/" + s3FileName;
+                foreach (var file in selectedFiles)
+                {
+                    var s3FileName = await awsS3FileManager.UploadFileAsync(file.Name, file.OpenReadStream());
+                    this.SitterRequest.Image = "https://yashuawss3bucket1.s3.eu-central-1.amazonaws.com/" + s3FileName;
 
+                }
             }
         }
 
