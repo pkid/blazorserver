@@ -18,6 +18,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-ENTRYPOINT ["dotnet", "ef", "database", "update"]
-
 ENTRYPOINT ["dotnet", "test2.dll"]
