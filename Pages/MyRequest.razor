@@ -57,7 +57,7 @@
         var authState = await this.authenticationStateProvider.GetAuthenticationStateAsync();
         var email = authState.User.Identity.Name;
         var allSitterRequests = await sitterRequestService.GetSitterRequestsAsync();
-        this.SitterRequests = allSitterRequests.Where(it=>it.SitterEmail.Equals(email)).ToList();
+        this.SitterRequests = allSitterRequests.Where(it=>it.RequesterEmail.Equals(email)).ToList();
     }
 
 }

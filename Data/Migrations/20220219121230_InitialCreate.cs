@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace test2.Data.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,6 +44,26 @@ namespace test2.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SitterRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true),
+                    StartDateTime = table.Column<DateTime>(nullable: false),
+                    EndDateTime = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    RequesterEmail = table.Column<string>(nullable: true),
+                    SitterEmail = table.Column<string>(nullable: true),
+                    Image = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SitterRequests", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -206,6 +226,9 @@ namespace test2.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "SitterRequests");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
