@@ -8,7 +8,9 @@ namespace test2.Data
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
         public string Description { get; set; }
-        public string Email { get; set; }
+        public string RequesterEmail { get; set; }
+        public string SitterEmail { get; set; }
         public string Image { get; set; }
+        public SitterRequestStatusEnum Status { get; set; }
     }
 }

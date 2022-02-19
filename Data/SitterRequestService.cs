@@ -42,7 +42,7 @@ namespace test2.Data
                 var authState = await this.authenticationStateProvider.GetAuthenticationStateAsync();
                 var user = authState.User;
 
-                sitterRequest.Email = user.Identity.Name;
+                sitterRequest.RequesterEmail = user.Identity.Name;
                 this.applicationDbContext.SitterRequests.Add(sitterRequest);
                 await this.applicationDbContext.SaveChangesAsync();
             }
