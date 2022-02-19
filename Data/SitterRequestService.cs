@@ -28,6 +28,11 @@ namespace test2.Data
             return await this.applicationDbContext.SitterRequests.ToListAsync();
         }
 
+        public async Task SaveSitterRequest(SitterRequest sitterRequest)
+        {
+            await this.applicationDbContext.SaveChangesAsync();
+        }
+
 
 
     

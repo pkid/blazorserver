@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @inject SitterRequestService sitterRequestService
+@inject AuthenticationStateProvider authenticationStateProvider
 
 
 <div class="container">
@@ -8,10 +9,13 @@
         <thead class="thead-dark">
             <tr>
                 <th>Request Id</th>
-                <th>Name</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>CreatedBy</th>
+                <th>AcceptedBy</th>
                 <th>Start Date Time</th>
                 <th>End Date Time</th>
-                <th>Description</th>
+                <th>Status</th>
                 <th>Image</th>
             </tr>
         </thead>
@@ -23,10 +27,16 @@
             <tr>
                 <td>@sitterRequest.Id</td>
                 <td>@sitterRequest.Name</td>
+                <td>@sitterRequest.Description</td>
+                <td>@sitterRequest.RequesterEmail</td>
+                <td>@sitterRequest.SitterEmail</td>
                 <td>@sitterRequest.StartDateTime.</td>
                 <td>@sitterRequest.EndDateTime</td>
-                <td>@sitterRequest.Description</td>
+                <td>@sitterRequest.Status</td>
                 <td><img src=@sitterRequest.Image width="50%" height="50%"></td>
+                @if (sitterRequest.Status == SitterRequestStatusEnum.INIT) {
+                <button @onclick="() => AcceptRequest(sitterRequest)" class="btn btn-primary">Accept Request</button>
+                }
             </tr>
                 }
             }
@@ -37,7 +47,7 @@
         </tbody>
     </table>
 
-    <button @onclick="ShowModal" class="btn btn-primary">Add Request</button>
+    <button @onclick="CreateRequestModal" class="btn btn-primary">Add Request</button>
 
 
 
@@ -62,10 +72,10 @@
     }
 
 
-    async Task ShowModal()
+    async Task CreateRequestModal()
     {
-        var moviesModal = Modal.Show<AddSitterRequest>("My Movies");
-        var result = await moviesModal.Result;
+        var addRequestModal = Modal.Show<AddSitterRequest>("Add Request");
+        var result = await addRequestModal.Result;
 
         if (result.Cancelled)
         {
@@ -76,6 +86,19 @@
             await RefreshSitterRequests();
             Console.WriteLine("Modal was closed");
         }
+    }
+
+    async void AcceptRequest(SitterRequest sitterRequest)
+    {
+        Console.WriteLine("change status to ACCEPTED");
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        sitterRequest.SitterEmail = user.Identity.Name;
+
+
+        sitterRequest.Status = SitterRequestStatusEnum.ACCEPTED;
+        await sitterRequestService.SaveSitterRequest(sitterRequest);
+        await RefreshSitterRequests();
     }
 
 }

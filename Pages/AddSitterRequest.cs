@@ -46,6 +46,7 @@ namespace test2.Pages
         protected async Task HandleValidSubmit()
         {
             await SaveFiles();
+            SitterRequest.Status = SitterRequestStatusEnum.INIT;
             await SitterRequestService.AddSitterRequestAsync(SitterRequest);
             await BlazoredModal.CloseAsync(ModalResult.Ok(true));
         }
@@ -71,7 +72,6 @@ namespace test2.Pages
         protected async Task OnInputFileChange(InputFileChangeEventArgs e)
         {
             selectedFiles = e.GetMultipleFiles();
-            //Message = $"{selectedFiles.Count} file(s) selected";
             this.StateHasChanged();
         }
     }
