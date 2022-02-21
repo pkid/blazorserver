@@ -98,7 +98,25 @@
 
         sitterRequest.Status = SitterRequestStatusEnum.ACCEPTED;
         await sitterRequestService.SaveSitterRequest(sitterRequest);
+
+        SendRequestToKinesis(sitterRequest);
         await RefreshSitterRequests();
+    }
+
+    private void SendRequestToKinesis(SitterRequest sitterRequest)
+    {
+        string jsonString = JsonSerializer.Serialize(sitterRequest);
+
+        const string myStreamName = "emailssss";
+        AmazonKinesisClient kinesisClient = new AmazonKinesisClient(RegionEndpoint.EUCentral1);
+        PutRecordRequest requestRecord = new PutRecordRequest();
+        requestRecord.StreamName = myStreamName;
+        requestRecord.Data = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+        requestRecord.PartitionKey = "partitionKey";
+        var putResultResponse = kinesisClient.PutRecordAsync(requestRecord).Result;
+        Console.WriteLine(
+            String.Format("Successfully putrecord:\n\t partition key = {0}, shard ID = {1}",
+               requestRecord.PartitionKey, putResultResponse.ShardId));
     }
 
 }
