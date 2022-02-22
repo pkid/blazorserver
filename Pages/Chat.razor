@@ -1,0 +1,109 @@
+﻿@page "/chat/{SitterRequest}"
+
+@inject ChatMessageService chatMessageService
+@inject AuthenticationStateProvider authenticationStateProvider
+
+
+
+<div class="d-flex flex-grow-1 flex-row">
+    <MudPaper Elevation="25" Class="py-4 flex-grow-1">
+        <MudToolBar Dense="true">
+            <MudIcon Icon="@Icons.Material.Outlined.ChatBubble" Style="margin-right:10px"></MudIcon>
+            <MudText Typo="Typo.h6" Style="margin-right:10px">Chatting With</MudText>
+            <MudText Typo="Typo.h6">@ChatWith</MudText>
+
+        </MudToolBar>
+        <div class="d-flex flex-column px-4" style="max-height:65vh;min-height:65vh; overflow:scroll;" id="chatContainer">
+            @foreach (var message in messages)
+            {
+                <div class="d-flex flex-row my-4">
+                    <div class="mr-4">
+                        @*<MudAvatar Color="Color.Secondary" Style="height:50px; width:50px;">@message.FromUser.Email.ToUpper().FirstOrDefault()</MudAvatar>*@
+                    </div>
+                    <div>
+                        @*<MudText Typo="Typo.body1">@message.FromUser.Email</MudText>*@
+                        <MudText Typo="Typo.caption" Style="font-size: xx-small!important;">@message.CreatedDate.ToString("dd MMM, yyyy hh:mm tt")</MudText>
+                        <MudText Typo="Typo.body2" Style=" padding: 15px;background-color: var(--mud-palette-background-grey);border-radius: 5px;margin-top:5px">@message.Message</MudText>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (allowedToChat)
+        {
+            <MudPaper Elevation="25" Class="d-flex flex-row px-2 mx-4" Style="">
+                <MudTextField T="string" Placeholder="Enter your message..." DisableUnderLine="true" Class="mt-n2 mx-4"
+                              @bind-Value="CurrentMessage" For="@(() => CurrentMessage)" />
+                <MudButton OnClick="SubmitAsync" StartIcon="@Icons.Material.Outlined.Send" Color="Color.Secondary" ButtonType="ButtonType.Button">Send</MudButton>
+            </MudPaper>
+        }
+    </MudPaper>
+</div>
+
+@code{
+    [Parameter]
+    public SitterRequest SitterRequest { get; set; }
+
+    public string CurrentMessage { get; set; }
+    public string CurrentUserId { get; set; }
+    //public string CurrentUserEmail { get; set; }
+
+    public string ChatWith { get; set; }
+    public bool allowedToChat { get; set; }
+
+    private List<ChatMessage> messages = new List<ChatMessage>();
+
+    private async Task SubmitAsync()
+    {
+        var chatMessage = new ChatMessage();
+        chatMessage.CreatedDate = DateTime.Now;
+        chatMessage.FromUserId = CurrentUserId;
+        chatMessage.ToUserId = ChatWith;
+        chatMessage.SitterRequestId = SitterRequest.Id;
+        chatMessage.Message = CurrentMessage;
+
+        CurrentMessage = "";
+
+        await chatMessageService.SaveChatMessage(chatMessage);
+        await RefreshMessages();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        checkIfAllowedToChat();
+        await RefreshMessages();
+    }
+
+    async void checkIfAllowedToChat()
+    {
+        allowedToChat = false;
+        // if request is not created by you, then you are talking to request creator
+        // if request is created by you, then you are talking to the request acceptor, if there is any
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        CurrentUserId = user.Identity.Name;
+
+        if (!CurrentUserId.Equals(SitterRequest.RequesterEmail))
+        {
+            ChatWith = SitterRequest.RequesterEmail;
+            allowedToChat = true;
+        }
+        else if (SitterRequest.SitterEmail != null)
+        {
+            ChatWith = SitterRequest.SitterEmail;
+            allowedToChat = true;
+        }
+        else
+        {
+            ChatWith = "You are not talking to anyone!";
+        }
+
+    }
+
+
+    private async Task RefreshMessages()
+    {
+        messages = chatMessageService.GetChatMessagesByRequestId(SitterRequest.Id);
+
+    }
+
+}

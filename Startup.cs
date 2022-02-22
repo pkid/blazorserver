@@ -20,6 +20,8 @@ using Blazored.Modal.Services;
 using Blazored.Modal;
 using Amazon.S3;
 using test2.Shared;
+using MudBlazor.Services;
+
 
 namespace test2
 {
@@ -47,14 +49,21 @@ namespace test2
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<WeatherForecastService>();
 
+            
             services.AddScoped<SitterRequestService>();
             services.AddScoped<AddSitterRequest>();
+
+            services.AddScoped<ChatMessageService>();
+            services.AddScoped<ChatMessage>();
+
             services.AddBlazoredModal();
 
             services.AddAWSService<IAmazonS3>();
             services.AddScoped<IAwsS3FileManager, AwsS3FileManager>();
+
+            services.AddMudServices();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -34,9 +34,11 @@
                 <td>@sitterRequest.EndDateTime</td>
                 <td>@sitterRequest.Status</td>
                 <td><img src=@sitterRequest.Image width="50%" height="50%"></td>
-                @if (sitterRequest.Status == SitterRequestStatusEnum.INIT) {
-                <button @onclick="() => AcceptRequest(sitterRequest)" class="btn btn-primary">Accept Request</button>
+                @if (sitterRequest.Status == SitterRequestStatusEnum.INIT)
+                {
+                    <button @onclick="() => AcceptRequest(sitterRequest)" class="btn btn-primary">Accept Request</button>
                 }
+                <button @onclick="()=>CreateChatModal(sitterRequest)" class="btn btn-primary">Chat</button>
             </tr>
                 }
             }
@@ -76,6 +78,25 @@
     {
         var addRequestModal = Modal.Show<AddSitterRequest>("Add Request");
         var result = await addRequestModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else
+        {
+            await RefreshSitterRequests();
+            Console.WriteLine("Modal was closed");
+        }
+    }
+
+    async Task CreateChatModal(SitterRequest sitterRequest)
+    {
+
+        var para = new ModalParameters();
+        para.Add("SitterRequest", sitterRequest);
+        var chatModal = Modal.Show<Chat>("Chat", para);
+        var result = await chatModal.Result;
 
         if (result.Cancelled)
         {
