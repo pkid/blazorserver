@@ -23,12 +23,6 @@ namespace test2.Data
             this.authenticationStateProvider = authenticationStateProvider;
         }
 
-
-        public async Task<List<SitterRequest>> GetSitterRequestsAsync()
-        {
-            return await this.applicationDbContext.SitterRequests.ToListAsync();
-        }
-
         public async Task<List<SitterRequest>> GetOpenRequests()
         {
             var temp = this.applicationDbContext.getOpenSitterRequests();

@@ -7,29 +7,32 @@
 <h1>My Request</h1>
 
 <div class="container">
+    <h3>Created By Me</h3>
     <table class="table table-bordered">
         <thead class="thead-dark">
             <tr>
                 <th>Request Id</th>
                 <th>Name</th>
+                <th>Sitter</th>
                 <th>Start Date Time</th>
                 <th>End Date Time</th>
                 <th>Description</th>
             </tr>
         </thead>
         <tbody>
-            @if (SitterRequests.Any())
+            @if (CreatedSitterRequests.Any())
             {
-                @foreach (var sitterRequest in SitterRequests)
+                @foreach (var sitterRequest in CreatedSitterRequests)
                 {
-                    <tr>
-                        <td>@sitterRequest.Id</td>
-                        <td>@sitterRequest.Name</td>
-                        <td>@sitterRequest.StartDateTime.</td>
-                        <td>@sitterRequest.EndDateTime</td>
-                        <td>@sitterRequest.Description</td>
-                        @*<td><button class="btn btn-danger" @onclick="(() => DeleteProduct(product))">Delete</button></td>*@
-                    </tr>
+            <tr>
+                <td>@sitterRequest.Id</td>
+                <td>@sitterRequest.Name</td>
+                <td>@sitterRequest.SitterEmail</td>
+                <td>@sitterRequest.StartDateTime.</td>
+                <td>@sitterRequest.EndDateTime</td>
+                <td>@sitterRequest.Description</td>
+                @*<td><button class="btn btn-danger" @onclick="(() => DeleteProduct(product))">Delete</button></td>*@
+            </tr>
                 }
             }
             else
@@ -38,14 +41,50 @@
             }
         </tbody>
     </table>
+</div>
 
-
+<div class="container">
+    <h3>Accepted By Me</h3>
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Request Id</th>
+                <th>Name</th>
+                <th>Requester</th>
+                <th>Start Date Time</th>
+                <th>End Date Time</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (AcceptedSitterRequests.Any())
+            {
+                @foreach (var sitterRequest in AcceptedSitterRequests)
+                {
+            <tr>
+                <td>@sitterRequest.Id</td>
+                <td>@sitterRequest.Name</td>
+                <td>@sitterRequest.RequesterEmail</td>
+                <td>@sitterRequest.StartDateTime.</td>
+                <td>@sitterRequest.EndDateTime</td>
+                <td>@sitterRequest.Description</td>
+                @*<td><button class="btn btn-danger" @onclick="(() => DeleteProduct(product))">Delete</button></td>*@
+            </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="6"><strong>No Sitter Requests available</strong></td></tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 
 @code {
 
-    List<SitterRequest> SitterRequests = new List<SitterRequest>();
+    List<SitterRequest> CreatedSitterRequests = new List<SitterRequest>();
+    List<SitterRequest> AcceptedSitterRequests = new List<SitterRequest>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,9 +94,11 @@
     private async Task RefreshSitterRequests()
     {
         var authState = await this.authenticationStateProvider.GetAuthenticationStateAsync();
-        var email = authState.User.Identity.Name;
-        var allSitterRequests = await sitterRequestService.GetSitterRequestsAsync();
-        this.SitterRequests = allSitterRequests.Where(it=>it.RequesterEmail.Equals(email)).ToList();
+        var me = authState.User.Identity.Name;
+
+        this.CreatedSitterRequests = await sitterRequestService.QuerySitterRequestByRequester(me);
+
+        this.AcceptedSitterRequests = await sitterRequestService.QuerySitterRequestBySitter(me);
     }
 
 }
