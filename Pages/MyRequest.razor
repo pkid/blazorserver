@@ -1,93 +1,59 @@
 ﻿@page "/myrequest"
 
+@inherits LayoutComponentBase
+
 @inject SitterRequestService sitterRequestService
 @inject AuthenticationStateProvider authenticationStateProvider
 
 
-<h1>My Request</h1>
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudTable Items="@CreatedSitterRequests" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Created Requests</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Request Id</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Sitter</MudTh>
+            <MudTh>Start Date Time</MudTh>
+            <MudTh>End Date Time</MudTh>
+            <MudTh>Description</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Id</MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.SitterEmail</MudTd>
+            <MudTd>@context.StartDateTime.</MudTd>
+            <MudTd>@context.EndDateTime</MudTd>
+            <MudTd>@context.Description</MudTd>
+        </RowTemplate>
+    </MudTable>
 
-<div class="container">
-    <h3>Created By Me</h3>
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>Request Id</th>
-                <th>Name</th>
-                <th>Sitter</th>
-                <th>Start Date Time</th>
-                <th>End Date Time</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (CreatedSitterRequests.Any())
-            {
-                @foreach (var sitterRequest in CreatedSitterRequests)
-                {
-            <tr>
-                <td>@sitterRequest.Id</td>
-                <td>@sitterRequest.Name</td>
-                <td>@sitterRequest.SitterEmail</td>
-                <td>@sitterRequest.StartDateTime.</td>
-                <td>@sitterRequest.EndDateTime</td>
-                <td>@sitterRequest.Description</td>
-                @*<td><button class="btn btn-danger" @onclick="(() => DeleteProduct(product))">Delete</button></td>*@
-            </tr>
-                }
-            }
-            else
-            {
-                <tr><td colspan="6"><strong>No Sitter Requests available</strong></td></tr>
-            }
-        </tbody>
-    </table>
-</div>
 
-<div class="container">
-    <h3>Accepted By Me</h3>
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>Request Id</th>
-                <th>Name</th>
-                <th>Requester</th>
-                <th>Start Date Time</th>
-                <th>End Date Time</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (AcceptedSitterRequests.Any())
-            {
-                @foreach (var sitterRequest in AcceptedSitterRequests)
-                {
-            <tr>
-                <td>@sitterRequest.Id</td>
-                <td>@sitterRequest.Name</td>
-                <td>@sitterRequest.RequesterEmail</td>
-                <td>@sitterRequest.StartDateTime.</td>
-                <td>@sitterRequest.EndDateTime</td>
-                <td>@sitterRequest.Description</td>
-                @*<td><button class="btn btn-danger" @onclick="(() => DeleteProduct(product))">Delete</button></td>*@
-            </tr>
-                }
-            }
-            else
-            {
-                <tr><td colspan="6"><strong>No Sitter Requests available</strong></td></tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<MudTable Items="@AcceptedSitterRequests" Hover="true" Breakpoint="Breakpoint.Sm"  LoadingProgressColor="Color.Info">
-    <HeaderContent>
-        <MudTh>Id</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Nr">@context.Id</MudTd>
-    </RowTemplate>
-</MudTable>
+    <MudTable Items="@AcceptedSitterRequests" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Accepted Requests</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Request Id</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Requester</MudTh>
+            <MudTh>Start Date Time</MudTh>
+            <MudTh>End Date Time</MudTh>
+            <MudTh>Description</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Id</MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.RequesterEmail</MudTd>
+            <MudTd>@context.StartDateTime.</MudTd>
+            <MudTd>@context.EndDateTime</MudTd>
+            <MudTd>@context.Description</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudContainer>
 
 
 @code {

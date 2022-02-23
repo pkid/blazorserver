@@ -1,24 +1,39 @@
 ﻿@inherits LayoutComponentBase
 
-    <MudThemeProvider />
-    <MudDialogProvider />
-    <MudSnackbarProvider />
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<!--<div class="sidebar">
+    <NavMenu />
+</div>
 
-    <div class="main">
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
-        </div>
-
-        @*<div class="content px-4">
+<div class="main">
+    <div class="top-row px-4 auth">
+        <LoginDisplay />
+    </div>-->
+@*<div class="content px-4">
+        @Body
+    </div>*@
+<!--<MudLayout>
+        <MudMainContent>
             @Body
-        </div>*@
-        <MudLayout>
-            <MudMainContent>
-                @Body
-            </MudMainContent>
-        </MudLayout>
-    </div>
+        </MudMainContent>
+    </MudLayout>
+</div>-->
+
+<MudLayout>
+    <MudAppBar>
+        Title
+    </MudAppBar>
+    <MudDrawer Open="true">
+        <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
+            <MudNavLink Href="/myrequest" Match="NavLinkMatch.Prefix">My Requests</MudNavLink>
+            <MudNavLink Href="/chat" Match="NavLinkMatch.Prefix">My Chats</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
