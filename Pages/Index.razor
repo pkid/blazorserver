@@ -17,6 +17,7 @@
                 <th>End Date Time</th>
                 <th>Status</th>
                 <th>Image</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -36,9 +37,11 @@
                 <td><img src=@sitterRequest.Image width="50%" height="50%"></td>
                 @if (sitterRequest.Status == SitterRequestStatusEnum.INIT)
                 {
-                    <button @onclick="() => AcceptRequest(sitterRequest)" class="btn btn-primary">Accept Request</button>
+                    @*<button @onclick="() => AcceptRequest(sitterRequest)" class="btn btn-primary">Accept Request</button>*@
+                    <MudButton Variant="Variant.Filled" @onclick="() => AcceptRequest(sitterRequest)" Color="Color.Primary">Accept</MudButton>
                 }
-                <button @onclick="()=>CreateChatModal(sitterRequest)" class="btn btn-primary">Chat</button>
+                @*<button @onclick="()=>CreateChatModal(sitterRequest)" class="btn btn-primary">Chat</button>*@
+                <MudButton Variant="Variant.Filled" @onclick="()=>CreateChatModal(sitterRequest)">Chat</MudButton>
             </tr>
                 }
             }
