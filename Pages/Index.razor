@@ -3,8 +3,9 @@
 @inject SitterRequestService sitterRequestService
 @inject AuthenticationStateProvider authenticationStateProvider
 
-
 <MudContainer MaxWidth="MaxWidth.Large">
+    <MudButton Variant="Variant.Filled" @onclick="CreateRequestModal" Color="Color.Primary">Add Request</MudButton>
+
     <MudTable Items="@SitterRequests" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Requests</MudText>
@@ -40,90 +41,90 @@
         </RowTemplate>
     </MudTable>
 
-    <MudButton Variant="Variant.Filled" @onclick="CreateRequestModal" Color="Color.Primary">Add Request</MudButton>
+
 </MudContainer>
-    @code {
-        [CascadingParameter] public IModalService Modal { get; set; }
+@code {
+    [CascadingParameter] public IModalService Modal { get; set; }
 
 
-        List<SitterRequest> SitterRequests = new List<SitterRequest>();
+    List<SitterRequest> SitterRequests = new List<SitterRequest>();
 
 
-        protected override async Task OnInitializedAsync()
-        {
-            await RefreshSitterRequests();
-        }
-
-        private async Task RefreshSitterRequests()
-        {
-            SitterRequests = await sitterRequestService.GetOpenRequests();
-        }
-
-
-        async Task CreateRequestModal()
-        {
-            var addRequestModal = Modal.Show<AddSitterRequest>("Add Request");
-            var result = await addRequestModal.Result;
-
-            if (result.Cancelled)
-            {
-                Console.WriteLine("Modal was cancelled");
-            }
-            else
-            {
-                await RefreshSitterRequests();
-                Console.WriteLine("Modal was closed");
-            }
-        }
-
-        async Task CreateChatModal(SitterRequest sitterRequest)
-        {
-
-            var para = new ModalParameters();
-            para.Add("SitterRequest", sitterRequest);
-            var chatModal = Modal.Show<Chat>("Chat", para);
-            var result = await chatModal.Result;
-
-            if (result.Cancelled)
-            {
-                Console.WriteLine("Modal was cancelled");
-            }
-            else
-            {
-                await RefreshSitterRequests();
-                Console.WriteLine("Modal was closed");
-            }
-        }
-
-        async void AcceptRequest(SitterRequest sitterRequest)
-        {
-            Console.WriteLine("change status to ACCEPTED");
-            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-            sitterRequest.SitterEmail = user.Identity.Name;
-
-
-            sitterRequest.Status = SitterRequestStatusEnum.ACCEPTED;
-            await sitterRequestService.SaveSitterRequest(sitterRequest);
-
-            SendRequestToKinesis(sitterRequest);
-            await RefreshSitterRequests();
-        }
-
-        private void SendRequestToKinesis(SitterRequest sitterRequest)
-        {
-            string jsonString = JsonSerializer.Serialize(sitterRequest);
-
-            const string myStreamName = "emailssss";
-            AmazonKinesisClient kinesisClient = new AmazonKinesisClient(RegionEndpoint.EUCentral1);
-            PutRecordRequest requestRecord = new PutRecordRequest();
-            requestRecord.StreamName = myStreamName;
-            requestRecord.Data = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
-            requestRecord.PartitionKey = "partitionKey";
-            var putResultResponse = kinesisClient.PutRecordAsync(requestRecord).Result;
-            Console.WriteLine(
-                String.Format("Successfully putrecord:\n\t partition key = {0}, shard ID = {1}",
-                   requestRecord.PartitionKey, putResultResponse.ShardId));
-        }
-
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshSitterRequests();
     }
+
+    private async Task RefreshSitterRequests()
+    {
+        SitterRequests = await sitterRequestService.GetOpenRequests();
+    }
+
+
+    async Task CreateRequestModal()
+    {
+        var addRequestModal = Modal.Show<AddSitterRequest>("Add Request");
+        var result = await addRequestModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else
+        {
+            await RefreshSitterRequests();
+            Console.WriteLine("Modal was closed");
+        }
+    }
+
+    async Task CreateChatModal(SitterRequest sitterRequest)
+    {
+
+        var para = new ModalParameters();
+        para.Add("SitterRequest", sitterRequest);
+        var chatModal = Modal.Show<Chat>("Chat", para);
+        var result = await chatModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else
+        {
+            await RefreshSitterRequests();
+            Console.WriteLine("Modal was closed");
+        }
+    }
+
+    async void AcceptRequest(SitterRequest sitterRequest)
+    {
+        Console.WriteLine("change status to ACCEPTED");
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        sitterRequest.SitterEmail = user.Identity.Name;
+
+
+        sitterRequest.Status = SitterRequestStatusEnum.ACCEPTED;
+        await sitterRequestService.SaveSitterRequest(sitterRequest);
+
+        SendRequestToKinesis(sitterRequest);
+        await RefreshSitterRequests();
+    }
+
+    private void SendRequestToKinesis(SitterRequest sitterRequest)
+    {
+        string jsonString = JsonSerializer.Serialize(sitterRequest);
+
+        const string myStreamName = "emailssss";
+        AmazonKinesisClient kinesisClient = new AmazonKinesisClient(RegionEndpoint.EUCentral1);
+        PutRecordRequest requestRecord = new PutRecordRequest();
+        requestRecord.StreamName = myStreamName;
+        requestRecord.Data = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+        requestRecord.PartitionKey = "partitionKey";
+        var putResultResponse = kinesisClient.PutRecordAsync(requestRecord).Result;
+        Console.WriteLine(
+            String.Format("Successfully putrecord:\n\t partition key = {0}, shard ID = {1}",
+               requestRecord.PartitionKey, putResultResponse.ShardId));
+    }
+
+}
