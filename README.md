@@ -14,5 +14,5 @@ how to run locally:
 
 * docker run -p 80:80 -p 443:443 -e SENDGRID_API_KEY=${SENDGRID_API_KEY} -e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} -e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}  -v ${PWD}/app/app.db:/app/app.db pkid/dogsitter
 
-note: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is your s3 credentials
+note: AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY is your s3 credentials, SENDGRID_API_KEY is the sendgrid api key
 
