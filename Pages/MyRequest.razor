@@ -80,6 +80,15 @@
     </table>
 </div>
 
+<MudTable Items="@AcceptedSitterRequests" Hover="true" Breakpoint="Breakpoint.Sm"  LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+    </RowTemplate>
+</MudTable>
+
 
 @code {
 
