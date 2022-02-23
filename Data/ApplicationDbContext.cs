@@ -11,7 +11,7 @@ namespace test2.Data
     {
 
         public DbSet<SitterRequest> SitterRequests { get; set; }
-        public DbSet<ChatMessage> ChatMessage { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -22,12 +22,26 @@ namespace test2.Data
         {
             try
             {
-                return ChatMessage.Where(e => e.SitterRequestId == sitterRequestId);
+                return ChatMessages.Where(e => e.SitterRequestId == sitterRequestId);
             }
             catch (Exception e)
             {
                 Console.Error.WriteLine(e.Message);
                 throw new Exception("QueryChatMessageByRequestId Failed");
+            }
+        }
+
+
+        public IQueryable<SitterRequest> getOpenSitterRequests()
+        {
+            try
+            {
+                return SitterRequests.Where(it => it.Status == SitterRequestStatusEnum.INIT);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                throw new Exception("getOpenSitterRequests Failed");
             }
         }
     }

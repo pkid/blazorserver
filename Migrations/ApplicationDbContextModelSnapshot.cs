@@ -2,17 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using test2.Data;
 
-namespace test2.Data.Migrations
+namespace test2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220222162325_chatmessages2")]
-    partial class chatmessages2
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,7 +235,7 @@ namespace test2.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChatMessage");
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("test2.Data.SitterRequest", b =>

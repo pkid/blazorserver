@@ -44,7 +44,7 @@ namespace test2.Data
 
             try
             {
-                this.applicationDbContext.ChatMessage.Add(chatMessage);
+                this.applicationDbContext.ChatMessages.Add(chatMessage);
                 await this.applicationDbContext.SaveChangesAsync();
             }
             catch (Exception)

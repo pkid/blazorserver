@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using test2.Data;
 
-namespace test2.Data.Migrations
+namespace test2.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220219121230_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220223081313_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -212,6 +212,32 @@ namespace test2.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("test2.Data.ChatMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FromUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("SitterRequestId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ToUserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("test2.Data.SitterRequest", b =>
