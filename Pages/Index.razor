@@ -127,7 +127,6 @@
         };
         var msgToRequester = MailHelper.CreateSingleTemplateEmail(from, to, "d-34e0e2a8afee4dbbaae9d7cfe1d73dae", dynamicTemplateDataToRequester);
         client.SendEmailAsync(msgToRequester);
-        //Console.WriteLine("requester email response: ", responseToRequester);
 
         //send to sitter: you are the sitter!
         to = new EmailAddress(sitterRequest.SitterEmail);
@@ -139,7 +138,6 @@
         };
         var msgToSitter = MailHelper.CreateSingleTemplateEmail(from, to, "d-c316e135d43145168070029cebf808b3", dynamicTemplateDataToSitter);
         client.SendEmailAsync(msgToSitter);
-        //Console.WriteLine("requester email response: ", responseToSitter);
     }
 
 }
