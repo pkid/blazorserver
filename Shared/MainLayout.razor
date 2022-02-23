@@ -5,36 +5,37 @@
 <MudSnackbarProvider />
 
 @*<div class="sidebar">
-    <NavMenu />
-</div>
+        <NavMenu />
+    </div>
 
-<div class="main">
-    <div class="top-row px-4 auth">
-        <LoginDisplay />
-    </div>
-    <div class="content px-4">
-        @Body
-    </div>
-    <MudLayout>
-        <MudMainContent>
+    <div class="main">
+        <div class="top-row px-4 auth">
+            <LoginDisplay />
+        </div>
+        <div class="content px-4">
             @Body
-        </MudMainContent>
-    </MudLayout>
-</div>*@
+        </div>
+        <MudLayout>
+            <MudMainContent>
+                @Body
+            </MudMainContent>
+        </MudLayout>
+    </div>*@
 
 <MudLayout>
-        <MudAppBar>
-            <LoginDisplay />
-        </MudAppBar>
-        <MudDrawer Open="true">
-            <MudNavMenu>
-                <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
-                <MudNavLink Href="/myrequest" Match="NavLinkMatch.Prefix">My Requests</MudNavLink>
-                <MudNavLink Href="/chat" Match="NavLinkMatch.Prefix">My Chats</MudNavLink>
-                @*<MudNavLink Href="/LoginDisplay" Match="NavLinkMatch.Prefix">Log In</MudNavLink>*@
-            </MudNavMenu>
-        </MudDrawer>
+    <MudAppBar>
+        <LoginDisplay/>
+    </MudAppBar>
+    <MudDrawer Open="true">
+        <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
+            <MudNavLink Href="/myrequest" Match="NavLinkMatch.Prefix">My Requests</MudNavLink>
+            <MudNavLink Href="/allchats" Match="NavLinkMatch.Prefix">My Chats</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudPaper Class="mt-100">
         <MudMainContent>
             @Body
         </MudMainContent>
-    </MudLayout>
+    </MudPaper>
+</MudLayout>

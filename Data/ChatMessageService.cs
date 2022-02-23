@@ -38,6 +38,20 @@ namespace test2.Data
             }
         }
 
+        public List<ChatMessage> GetChatMessagesByCurrentUserEmail(string email)
+        {
+            var temp = this.applicationDbContext.QueryChatMessageByEmail(email);
+
+            if (temp.Any())
+            {
+                return temp.ToList<ChatMessage>();
+            }
+            else
+            {
+                return new List<ChatMessage>();
+            }
+        }
+
 
         public async Task<ChatMessage> SaveChatMessage(ChatMessage chatMessage)
         {

@@ -71,6 +71,20 @@ namespace test2.Data
             await this.applicationDbContext.SaveChangesAsync();
         }
 
+        public SitterRequest QuerySitterRequestById(long  id)
+        {
+            var temp = this.applicationDbContext.QuerySitterRequestById(id);
+
+            if (temp.Any())
+            {
+                return temp.ToList<SitterRequest>().First<SitterRequest>();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
 
         public async Task<SitterRequest> AddSitterRequestAsync(SitterRequest sitterRequest)
         {

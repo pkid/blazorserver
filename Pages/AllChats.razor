@@ -1,0 +1,76 @@
+﻿@page "/allchats"
+
+@inject ChatMessageService chatMessageService
+@inject SitterRequestService sitterRequestService
+
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<MudText Typo="Typo.h6" GutterBottom="true">Request Id</MudText>
+<MudPaper Width="300px">
+    <MudList Clickable="true">
+        @foreach (var requestId in messages.Select(x => x.SitterRequestId).Distinct())
+        {
+            <MudListItem Text="@requestId.ToString()" OnClick="()=>PrepareOpeningChat(requestId)" />
+        }
+    </MudList>
+</MudPaper>
+
+
+@code{
+
+    [CascadingParameter] public IModalService Modal { get; set; }
+
+
+    public string CurrentUserEmail { get; set; }
+
+    private List<ChatMessage> messages = new List<ChatMessage>();
+
+
+
+    async Task PrepareOpeningChat(long requestId)
+    {
+        var sitterRequest = sitterRequestService.QuerySitterRequestById(requestId);
+        if(sitterRequest != null)
+        {
+            await CreateChatModal(sitterRequest);
+        }
+    }
+
+    async Task CreateChatModal(SitterRequest sitterRequest)
+    {
+
+        var para = new ModalParameters();
+        para.Add("SitterRequest", sitterRequest);
+        var chatModal = Modal.Show<Chat>("Chat", para);
+        var result = await chatModal.Result;
+
+        if (result.Cancelled)
+        {
+            Console.WriteLine("Modal was cancelled");
+        }
+        else
+        {
+            await RefreshMessages();
+            Console.WriteLine("Modal was closed");
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        CurrentUserEmail = user.Identity.Name;
+
+        await RefreshMessages();
+    }
+
+
+
+    private async Task RefreshMessages()
+    {
+        messages = chatMessageService.GetChatMessagesByCurrentUserEmail(CurrentUserEmail);
+
+    }
+
+}

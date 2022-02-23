@@ -31,6 +31,19 @@ namespace test2.Data
             }
         }
 
+        public IQueryable<ChatMessage> QueryChatMessageByEmail(string email)
+        {
+            try
+            {
+                return ChatMessages.Where(e => e.FromUserId == email || e.ToUserId == email);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                throw new Exception("QueryChatMessageByEmail Failed");
+            }
+        }
+
         public IQueryable<SitterRequest> QuerySitterRequestByRequester(string requester)
         {
             try
@@ -49,6 +62,19 @@ namespace test2.Data
             try
             {
                 return SitterRequests.Where(it => it.SitterEmail == sitter);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                throw new Exception("QuerySitterRequestBySitter Failed");
+            }
+        }
+
+        public IQueryable<SitterRequest> QuerySitterRequestById(long id)
+        {
+            try
+            {
+                return SitterRequests.Where(it => it.Id == id);
             }
             catch (Exception e)
             {
