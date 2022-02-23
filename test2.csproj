@@ -44,9 +44,4 @@
     <PackageReference Include="SendGrid" Version="9.25.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ClientLibrary">
-      <HintPath>..\..\..\Downloads\amazon-kinesis-client-net-master\ClientLibrary\bin\Debug\netcoreapp5.0\ClientLibrary.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>
