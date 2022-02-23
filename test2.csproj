@@ -39,8 +39,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Downloads\amazon-kinesis-client-net-master\ClientLibrary\ClientLibrary.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
+    <Reference Include="ClientLibrary">
+      <HintPath>..\..\..\Downloads\amazon-kinesis-client-net-master\ClientLibrary\bin\Debug\netcoreapp5.0\ClientLibrary.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
