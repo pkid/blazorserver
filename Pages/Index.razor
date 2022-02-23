@@ -106,24 +106,40 @@
         sitterRequest.Status = SitterRequestStatusEnum.ACCEPTED;
         await sitterRequestService.SaveSitterRequest(sitterRequest);
 
-        SendRequestToKinesis(sitterRequest);
+        sendEmails(sitterRequest);
         await RefreshSitterRequests();
     }
 
-    private void SendRequestToKinesis(SitterRequest sitterRequest)
-    {
-        string jsonString = JsonSerializer.Serialize(sitterRequest);
 
-        const string myStreamName = "emailssss";
-        AmazonKinesisClient kinesisClient = new AmazonKinesisClient(RegionEndpoint.EUCentral1);
-        PutRecordRequest requestRecord = new PutRecordRequest();
-        requestRecord.StreamName = myStreamName;
-        requestRecord.Data = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
-        requestRecord.PartitionKey = "partitionKey";
-        var putResultResponse = kinesisClient.PutRecordAsync(requestRecord).Result;
-        Console.WriteLine(
-            String.Format("Successfully putrecord:\n\t partition key = {0}, shard ID = {1}",
-               requestRecord.PartitionKey, putResultResponse.ShardId));
+    private void sendEmails(SitterRequest sitterRequest)
+    {
+        var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+        var client = new SendGridClient(apiKey);
+        var from = new EmailAddress("yashu.liang@gmx.de", "DogSitter Company");
+
+        //send to requester: dog sitter found!
+        var to = new EmailAddress(sitterRequest.RequesterEmail);
+        var dynamicTemplateDataToRequester = new
+        {
+            requestId = sitterRequest.Id,
+            name = "there",
+            sitterEmail = sitterRequest.SitterEmail,
+        };
+        var msgToRequester = MailHelper.CreateSingleTemplateEmail(from, to, "d-34e0e2a8afee4dbbaae9d7cfe1d73dae", dynamicTemplateDataToRequester);
+        client.SendEmailAsync(msgToRequester);
+        //Console.WriteLine("requester email response: ", responseToRequester);
+
+        //send to sitter: you are the sitter!
+        to = new EmailAddress(sitterRequest.SitterEmail);
+        var dynamicTemplateDataToSitter = new
+        {
+            requestId = sitterRequest.Id,
+            name = "there",
+            requesterEmail = sitterRequest.RequesterEmail,
+        };
+        var msgToSitter = MailHelper.CreateSingleTemplateEmail(from, to, "d-c316e135d43145168070029cebf808b3", dynamicTemplateDataToSitter);
+        client.SendEmailAsync(msgToSitter);
+        //Console.WriteLine("requester email response: ", responseToSitter);
     }
 
 }
