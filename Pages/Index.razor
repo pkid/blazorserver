@@ -4,143 +4,126 @@
 @inject AuthenticationStateProvider authenticationStateProvider
 
 
-<div class="container">
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>Request Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>CreatedBy</th>
-                <th>AcceptedBy</th>
-                <th>Start Date Time</th>
-                <th>End Date Time</th>
-                <th>Status</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (SitterRequests.Any())
+<MudContainer MaxWidth="MaxWidth.Large">
+    <MudTable Items="@SitterRequests" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Requests</MudText>
+            <MudSpacer />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Request Id</MudTh>
+            <MudTh>Title</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>CreatedBy</MudTh>
+            <MudTh>Start Date Time</MudTh>
+            <MudTh>End Date Time</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>Image</MudTh>
+            <MudTh>Action</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Id</MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.Description</MudTd>
+            <MudTd>@context.RequesterEmail</MudTd>
+            <MudTd>@context.SitterEmail</MudTd>
+            <MudTd>@context.StartDateTime.</MudTd>
+            <MudTd>@context.EndDateTime</MudTd>
+            <MudTd>@context.Status</MudTd>
+            <MudTd><img src=@context.Image width="50%" height="50%"></MudTd>
+            @if (context.Status == SitterRequestStatusEnum.INIT)
             {
-                @foreach (var sitterRequest in SitterRequests)
-                {
-            <tr>
-                <td>@sitterRequest.Id</td>
-                <td>@sitterRequest.Name</td>
-                <td>@sitterRequest.Description</td>
-                <td>@sitterRequest.RequesterEmail</td>
-                <td>@sitterRequest.SitterEmail</td>
-                <td>@sitterRequest.StartDateTime.</td>
-                <td>@sitterRequest.EndDateTime</td>
-                <td>@sitterRequest.Status</td>
-                <td><img src=@sitterRequest.Image width="50%" height="50%"></td>
-                @if (sitterRequest.Status == SitterRequestStatusEnum.INIT)
-                {
-                    @*<button @onclick="() => AcceptRequest(sitterRequest)" class="btn btn-primary">Accept Request</button>*@
-                    <MudButton Variant="Variant.Filled" @onclick="() => AcceptRequest(sitterRequest)" Color="Color.Primary">Accept</MudButton>
-                }
-                @*<button @onclick="()=>CreateChatModal(sitterRequest)" class="btn btn-primary">Chat</button>*@
-                <MudButton Variant="Variant.Filled" @onclick="()=>CreateChatModal(sitterRequest)">Chat</MudButton>
-            </tr>
-                }
+                <MudButton Variant="Variant.Filled" @onclick="() => AcceptRequest(context)" Color="Color.Primary">Accept</MudButton>
+            }
+            <MudButton Variant="Variant.Filled" @onclick="()=>CreateChatModal(context)">Chat</MudButton>
+
+        </RowTemplate>
+    </MudTable>
+
+    <MudButton Variant="Variant.Filled" @onclick="CreateRequestModal" Color="Color.Primary">Add Request</MudButton>
+</MudContainer>
+    @code {
+        [CascadingParameter] public IModalService Modal { get; set; }
+
+
+        List<SitterRequest> SitterRequests = new List<SitterRequest>();
+
+
+        protected override async Task OnInitializedAsync()
+        {
+            await RefreshSitterRequests();
+        }
+
+        private async Task RefreshSitterRequests()
+        {
+            SitterRequests = await sitterRequestService.GetOpenRequests();
+        }
+
+
+        async Task CreateRequestModal()
+        {
+            var addRequestModal = Modal.Show<AddSitterRequest>("Add Request");
+            var result = await addRequestModal.Result;
+
+            if (result.Cancelled)
+            {
+                Console.WriteLine("Modal was cancelled");
             }
             else
             {
-                <tr><td colspan="6"><strong>No Sitter Requests available</strong></td></tr>
+                await RefreshSitterRequests();
+                Console.WriteLine("Modal was closed");
             }
-        </tbody>
-    </table>
-
-    <button @onclick="CreateRequestModal" class="btn btn-primary">Add Request</button>
-
-
-
-</div>
-
-
-@code {
-    [CascadingParameter] public IModalService Modal { get; set; }
-
-
-    List<SitterRequest> SitterRequests = new List<SitterRequest>();
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshSitterRequests();
-    }
-
-    private async Task RefreshSitterRequests()
-    {
-        SitterRequests = await sitterRequestService.GetOpenRequests();
-    }
-
-
-    async Task CreateRequestModal()
-    {
-        var addRequestModal = Modal.Show<AddSitterRequest>("Add Request");
-        var result = await addRequestModal.Result;
-
-        if (result.Cancelled)
-        {
-            Console.WriteLine("Modal was cancelled");
         }
-        else
+
+        async Task CreateChatModal(SitterRequest sitterRequest)
         {
+
+            var para = new ModalParameters();
+            para.Add("SitterRequest", sitterRequest);
+            var chatModal = Modal.Show<Chat>("Chat", para);
+            var result = await chatModal.Result;
+
+            if (result.Cancelled)
+            {
+                Console.WriteLine("Modal was cancelled");
+            }
+            else
+            {
+                await RefreshSitterRequests();
+                Console.WriteLine("Modal was closed");
+            }
+        }
+
+        async void AcceptRequest(SitterRequest sitterRequest)
+        {
+            Console.WriteLine("change status to ACCEPTED");
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            sitterRequest.SitterEmail = user.Identity.Name;
+
+
+            sitterRequest.Status = SitterRequestStatusEnum.ACCEPTED;
+            await sitterRequestService.SaveSitterRequest(sitterRequest);
+
+            SendRequestToKinesis(sitterRequest);
             await RefreshSitterRequests();
-            Console.WriteLine("Modal was closed");
         }
-    }
 
-    async Task CreateChatModal(SitterRequest sitterRequest)
-    {
-
-        var para = new ModalParameters();
-        para.Add("SitterRequest", sitterRequest);
-        var chatModal = Modal.Show<Chat>("Chat", para);
-        var result = await chatModal.Result;
-
-        if (result.Cancelled)
+        private void SendRequestToKinesis(SitterRequest sitterRequest)
         {
-            Console.WriteLine("Modal was cancelled");
+            string jsonString = JsonSerializer.Serialize(sitterRequest);
+
+            const string myStreamName = "emailssss";
+            AmazonKinesisClient kinesisClient = new AmazonKinesisClient(RegionEndpoint.EUCentral1);
+            PutRecordRequest requestRecord = new PutRecordRequest();
+            requestRecord.StreamName = myStreamName;
+            requestRecord.Data = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
+            requestRecord.PartitionKey = "partitionKey";
+            var putResultResponse = kinesisClient.PutRecordAsync(requestRecord).Result;
+            Console.WriteLine(
+                String.Format("Successfully putrecord:\n\t partition key = {0}, shard ID = {1}",
+                   requestRecord.PartitionKey, putResultResponse.ShardId));
         }
-        else
-        {
-            await RefreshSitterRequests();
-            Console.WriteLine("Modal was closed");
-        }
+
     }
-
-    async void AcceptRequest(SitterRequest sitterRequest)
-    {
-        Console.WriteLine("change status to ACCEPTED");
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        sitterRequest.SitterEmail = user.Identity.Name;
-
-
-        sitterRequest.Status = SitterRequestStatusEnum.ACCEPTED;
-        await sitterRequestService.SaveSitterRequest(sitterRequest);
-
-        SendRequestToKinesis(sitterRequest);
-        await RefreshSitterRequests();
-    }
-
-    private void SendRequestToKinesis(SitterRequest sitterRequest)
-    {
-        string jsonString = JsonSerializer.Serialize(sitterRequest);
-
-        const string myStreamName = "emailssss";
-        AmazonKinesisClient kinesisClient = new AmazonKinesisClient(RegionEndpoint.EUCentral1);
-        PutRecordRequest requestRecord = new PutRecordRequest();
-        requestRecord.StreamName = myStreamName;
-        requestRecord.Data = new MemoryStream(Encoding.UTF8.GetBytes(jsonString));
-        requestRecord.PartitionKey = "partitionKey";
-        var putResultResponse = kinesisClient.PutRecordAsync(requestRecord).Result;
-        Console.WriteLine(
-            String.Format("Successfully putrecord:\n\t partition key = {0}, shard ID = {1}",
-               requestRecord.PartitionKey, putResultResponse.ShardId));
-    }
-
-}
