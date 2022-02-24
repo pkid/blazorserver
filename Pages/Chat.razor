@@ -2,6 +2,8 @@
 
 @inject ChatMessageService chatMessageService
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager navigationManager
+
 
 
 
@@ -52,6 +54,8 @@
 
     private List<ChatMessage> messages = new List<ChatMessage>();
 
+    private HubConnection hubConnection;
+
     private async Task SubmitAsync()
     {
         var chatMessage = new ChatMessage();
@@ -62,15 +66,30 @@
         chatMessage.Message = CurrentMessage;
 
         CurrentMessage = "";
+        await hubConnection.SendAsync("SendMessage", SitterRequest.Id, chatMessage);
 
         await chatMessageService.SaveChatMessage(chatMessage);
-        await RefreshMessages();
     }
 
     protected override async Task OnInitializedAsync()
     {
         checkIfAllowedToChat();
-        await RefreshMessages();
+        if (allowedToChat)
+        {
+            await RefreshMessages();
+
+            hubConnection = new HubConnectionBuilder().WithUrl(navigationManager.ToAbsoluteUri("/chathub")).Build();
+            await hubConnection.StartAsync();
+            hubConnection.On<long, ChatMessage>("ReceiveMessage", (sitterRequestId, chatMessage) =>
+            {
+                Console.WriteLine("sitterRequestId: ", sitterRequestId);
+                Console.WriteLine("message: ", chatMessage);
+
+                messages.Add(chatMessage);
+
+                StateHasChanged();
+            });
+        }
     }
 
     async void checkIfAllowedToChat()

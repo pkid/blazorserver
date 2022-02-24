@@ -17,6 +17,7 @@
     <None Remove="Microsoft.IdentityModel.Logging" />
     <None Remove="Microsoft.Extensions.Identity.Core" />
     <None Remove="SendGrid" />
+    <None Remove="Microsoft.AspNetCore.SignalR.Client" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.1" />
@@ -41,6 +42,7 @@
     <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.16.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.2" />
     <PackageReference Include="SendGrid" Version="9.25.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.14" />
   </ItemGroup>
 
 </Project>

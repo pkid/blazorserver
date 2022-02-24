@@ -64,6 +64,8 @@ namespace test2
 
             services.AddMudServices();
 
+            services.AddSignalR();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,6 +105,7 @@ namespace test2
                 endpoints.MapControllers();
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
+                endpoints.MapHub<ChatHub>("/chathub");
             });
         }
     }
