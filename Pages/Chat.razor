@@ -85,9 +85,11 @@
                 Console.WriteLine("sitterRequestId: ", sitterRequestId);
                 Console.WriteLine("message: ", chatMessage);
 
-                messages.Add(chatMessage);
-
-                StateHasChanged();
+                if(sitterRequestId == SitterRequest.Id)
+                {
+                    messages.Add(chatMessage);
+                    StateHasChanged();
+                }
             });
         }
     }
