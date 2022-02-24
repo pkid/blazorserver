@@ -96,7 +96,7 @@
 
     async void checkIfAllowedToChat()
     {
-        allowedToChat = false;
+        allowedToChat = true;
         // if request is not created by you, then you are talking to request creator
         // if request is created by you, then you are talking to the request acceptor, if there is any
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
