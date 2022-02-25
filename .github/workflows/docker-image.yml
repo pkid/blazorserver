@@ -21,7 +21,7 @@ jobs:
       uses: docker/login-action@v1.13.0
       with:
         password: ${{ secrets.DOCKER_PWD }}
-        user: ${{ secrets.DOCKER_USER }}
+        username: ${{ secrets.DOCKER_USER }}
     
     - name: Build and push
       uses: docker/build-push-action@v2
