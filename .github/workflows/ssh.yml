@@ -18,7 +18,12 @@ jobs:
   
 
     steps:
-      - name: ssh
-        run: ssh root@46.101.189.31
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: 46.101.189.31
+        username: root
+        password: ${{ secrets.DROPLET_ROOT_PWD }}
+        script: whoami
 
    
