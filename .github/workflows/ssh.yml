@@ -23,7 +23,7 @@ jobs:
       with:
         host: 46.101.189.31
         username: root
-        password: ${{ secrets.DROPLET_ROOT_PWD }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: whoami
 
    
